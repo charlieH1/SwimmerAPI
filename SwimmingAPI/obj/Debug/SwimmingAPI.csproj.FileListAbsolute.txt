@@ -257,3 +257,8 @@ C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\bin\Nin
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\bin\Ninject.Web.Common.WebHost.xml
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\bin\Ninject.Web.WebApi.xml
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\bin\Ninject.Web.WebApi.WebHost.xml
+C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\obj\Debug\SwimmingAPI.Migrations.UpdateEvents.resources
+C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\obj\Debug\SwimmingAPI.Migrations.UpdateEvents2.resources
+C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\obj\Debug\SwimmingAPI.Migrations.UpdateEvents3.resources
+C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\obj\Debug\SwimmingAPI.Migrations.UpdateEvents4.resources
+C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\obj\Debug\SwimmingAPI.Migrations.UpdateEvents5.resources

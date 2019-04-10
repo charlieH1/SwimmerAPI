@@ -69,7 +69,7 @@ namespace SwimmingAPI.App_Start
         {
             kernel.Bind<ApplicationDbContext>().To<ApplicationDbContext>();
             kernel.Bind<IMeetRepo>().To<MeetRepo>();
-            kernel.Bind<IEventRepo>().To<EventRepo>()
+            kernel.Bind<IEventRepo>().To<EventRepo>();
         }        
     }
 }

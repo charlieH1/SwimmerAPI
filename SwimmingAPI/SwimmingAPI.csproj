@@ -237,6 +237,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\EventHandler.cs" />
+    <Compile Include="Handlers\Interfaces\IEventHandler.cs" />
     <Compile Include="Migrations\201904071700194_InitialCreate.cs" />
     <Compile Include="Migrations\201904071700194_InitialCreate.Designer.cs">
       <DependentUpon>201904071700194_InitialCreate.cs</DependentUpon>
@@ -261,6 +263,26 @@
     <Compile Include="Migrations\201904072304129_Event2.Designer.cs">
       <DependentUpon>201904072304129_Event2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904101544337_UpdateEvents.cs" />
+    <Compile Include="Migrations\201904101544337_UpdateEvents.Designer.cs">
+      <DependentUpon>201904101544337_UpdateEvents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904101629363_UpdateEvents2.cs" />
+    <Compile Include="Migrations\201904101629363_UpdateEvents2.Designer.cs">
+      <DependentUpon>201904101629363_UpdateEvents2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904101727229_UpdateEvents3.cs" />
+    <Compile Include="Migrations\201904101727229_UpdateEvents3.Designer.cs">
+      <DependentUpon>201904101727229_UpdateEvents3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904101745581_UpdateEvents4.cs" />
+    <Compile Include="Migrations\201904101745581_UpdateEvents4.Designer.cs">
+      <DependentUpon>201904101745581_UpdateEvents4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904101857078_UpdateEvents5.cs" />
+    <Compile Include="Migrations\201904101857078_UpdateEvents5.Designer.cs">
+      <DependentUpon>201904101857078_UpdateEvents5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -271,9 +293,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Repo\EventRepo.cs" />
-    <Compile Include="Repo\IEventRepo.cs" />
+    <Compile Include="Repo\EventResultsRepo.cs" />
+    <Compile Include="Repo\Interfaces\IEventResultsRepo.cs" />
+    <Compile Include="Repo\Interfaces\IEventRepo.cs" />
     <Compile Include="Repo\Interfaces\IMeetRepo.cs" />
+    <Compile Include="Repo\Interfaces\IUserRepo.cs" />
     <Compile Include="Repo\MeetRepo.cs" />
+    <Compile Include="Repo\UserRepo.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -396,6 +422,21 @@
     <EmbeddedResource Include="Migrations\201904072304129_Event2.resx">
       <DependentUpon>201904072304129_Event2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904101544337_UpdateEvents.resx">
+      <DependentUpon>201904101544337_UpdateEvents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904101629363_UpdateEvents2.resx">
+      <DependentUpon>201904101629363_UpdateEvents2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904101727229_UpdateEvents3.resx">
+      <DependentUpon>201904101727229_UpdateEvents3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904101745581_UpdateEvents4.resx">
+      <DependentUpon>201904101745581_UpdateEvents4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904101857078_UpdateEvents5.resx">
+      <DependentUpon>201904101857078_UpdateEvents5.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -408,6 +449,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

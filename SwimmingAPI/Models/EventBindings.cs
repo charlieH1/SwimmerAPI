@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using SwimmingAPI.Controllers;
 
 namespace SwimmingAPI.Models
 {
@@ -15,11 +16,19 @@ namespace SwimmingAPI.Models
 
         [Required]
         [Display(Name="Event Code")]
-        public int EventCode { get; set; }
+        public string EventCode { get; set; }
 
         [Required]
         [Display(Name = "Round")]
         public string Round { get; set; }
+
+        [Required]
+        [Display(Name ="Event Age")]
+        public string EventAge { get; set; }
+
+        [Required]
+        [Display(Name ="Event Gender")]
+        public string EventGender { get; set; }
 
         [Required]
         [Display(Name ="Meet ID")]     
@@ -29,11 +38,11 @@ namespace SwimmingAPI.Models
         public Meet Meet { get; set; }
     }
 
-    public class EventViewAndAdd
+    public class EventAddModel
     {
         [Required]
         [Display(Name = "Event Code")]
-        public int EventCode { get; set; }
+        public string EventCode { get; set; }
 
         [Required]
         [Display(Name = "Round")]
@@ -42,6 +51,14 @@ namespace SwimmingAPI.Models
         [Required]
         [Display(Name ="Meet Id")]
         public int MeetId { get; set; }
+        
+        [Required]
+        [Display(Name = "Event Gender")]
+        public string EventGender { get; set; }
+
+        [Required]
+        [Display(Name="Event Age")]
+        public string EventAge { get; set; }
     }
 
     public class EventResult
@@ -63,7 +80,18 @@ namespace SwimmingAPI.Models
         public ApplicationUser Swimmer { get; set; }
 
         [Required]
-        public int Hours { get; set; }
+        public TimeSpan Time { get; set; }
+
+    }
+
+    public class AddResultModel
+    {
+
+        [Required]
+        public int EventId { get; set; }
+
+        [Required]
+        public string UserId { get; set; }
 
         [Required]
         public int Minutes { get; set; }
@@ -71,7 +99,10 @@ namespace SwimmingAPI.Models
         [Required]
         public int Seconds { get; set; }
 
+        [Required]
+        public int Hundreths { get; set; }
     }
+
 
     public class EventResultView
     {
@@ -87,7 +118,7 @@ namespace SwimmingAPI.Models
 
         [Required] public string Time { get; set; }
 
-        [Required] public int EventCode { get; set; }
+        [Required] public string EventCode { get; set; }
 
         [Required] public string Round { get; set; }
     }
