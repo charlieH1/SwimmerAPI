@@ -806,6 +806,30 @@
             <param name="venue">The venue</param>
             <returns>The meets</returns>
         </member>
+        <member name="T:SwimmingAPI.Controllers.PostmanApiController">
+            <summary>
+            Based on http://blogs.msdn.com/b/yaohuang1/archive/2012/06/15/using-apiexplorer-to-export-api-information-to-postman-a-chrome-extension-for-testing-web-apis.aspx
+            Allows api endpoints to be imported into postman
+            </summary>
+        </member>
+        <member name="M:SwimmingAPI.Controllers.PostmanApiController.#ctor">
+            <summary>
+                Produce [POSTMAN](http://www.getpostman.com) related responses
+            </summary>
+        </member>
+        <member name="M:SwimmingAPI.Controllers.PostmanApiController.GetPostmanCollection">
+            <summary>
+                Get a postman collection of all visible Api
+                (Get the [POSTMAN](http://www.getpostman.com) chrome extension)
+            </summary>
+            <returns>object describing a POSTMAN collection</returns>
+            <remarks>Get a postman collection of all visible api</remarks>
+        </member>
+        <member name="T:SwimmingAPI.Controllers.HttpMethodComparator">
+            <summary>
+                Quick comparer for ordering http methods for display
+            </summary>
+        </member>
         <member name="T:SwimmingAPI.Models.AddExternalLoginBindingModel">
             <summary>
             The binding model for adding a external login
@@ -994,6 +1018,172 @@
         <member name="T:SwimmingAPI.Models.UserInfoViewModel">
             <summary>
             The model for viewing a user
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:SwimmingAPI.Models.Postman.PostmanCollectionGet" -->
+        <member name="P:SwimmingAPI.Models.Postman.PostmanCollectionGet.Id">
+            <summary>
+                Id of collection
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanCollectionGet.Name">
+            <summary>
+                Name of collection
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanCollectionGet.Description">
+            <summary>
+                Description of collection
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanCollectionGet.Order">
+            <summary>
+                ordered list of ids of items in the collection
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanCollectionGet.Folders">
+            <summary>
+                folders within the collection
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanCollectionGet.Timestamp">
+            <summary>
+                Collection generation time
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanCollectionGet.Synced">
+            <summary>
+                **unused always false**
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanCollectionGet.Requests">
+            <summary>
+                Requests associated with the collection
+            </summary>
+        </member>
+        <member name="T:SwimmingAPI.Models.Postman.PostmanFolderGet">
+            <summary>
+                Object that describes a [Postman](http://getpostman.com) folder
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanFolderGet.Id">
+            <summary>
+                id of the folder
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanFolderGet.Name">
+            <summary>
+                folder name
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanFolderGet.Description">
+            <summary>
+                folder description
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanFolderGet.Order">
+            <summary>
+                ordered list of ids of items in folder
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanFolderGet.CollectionName">
+            <summary>
+                Name of the collection
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanFolderGet.CollectionId">
+            <summary>
+                id of the collection
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanFolderGet.Collection">
+            <summary>
+             the collection
+            </summary>
+        </member>
+        <member name="T:SwimmingAPI.Models.Postman.PostmanRequestGet">
+            <summary>
+                [Postman](http://getpostman.com) request object
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Id">
+            <summary>
+                id of request
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Headers">
+            <summary>
+                headers associated with the request
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Url">
+            <summary>
+                url of the request
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.PathVariables">
+            <summary>
+                path variables of the request
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Method">
+            <summary>
+                method of request
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Data">
+            <summary>
+                data to be sent with the request
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.DataMode">
+            <summary>
+                data mode of reqeust
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Name">
+            <summary>
+                name of request
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Description">
+            <summary>
+                request description
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.DescriptionFormat">
+            <summary>
+                format of description
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Time">
+            <summary>
+                time that this request object was generated
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Version">
+            <summary>
+                version of the request object
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Responses">
+            <summary>
+                request response
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.CollectionId">
+            <summary>
+                the id of the collection that the request object belongs to
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Synced">
+            <summary>
+                Synching
+            </summary>
+        </member>
+        <member name="P:SwimmingAPI.Models.Postman.PostmanRequestGet.Folder">
+            <summary>
+            Folder the request belongs too
             </summary>
         </member>
     </members>
