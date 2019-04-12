@@ -7,7 +7,6 @@ using SwimmingAPI.Repo.Interfaces;
 namespace SwimmingAPI.App_Start
 {
     using System;
-    using System.Data.Entity;
     using System.Web;
 
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
@@ -67,9 +66,14 @@ namespace SwimmingAPI.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
+            //Application db context
             kernel.Bind<ApplicationDbContext>().To<ApplicationDbContext>();
+            //repositorys
             kernel.Bind<IMeetRepo>().To<MeetRepo>();
             kernel.Bind<IEventRepo>().To<EventRepo>();
+            kernel.Bind<IEventResultsRepo>().To<EventResultsRepo>();
+            kernel.Bind<IUserRepo>().To<UserRepo>();
+           
         }        
     }
 }

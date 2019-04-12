@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.AspNet.Identity.EntityFramework;
 using SwimmingAPI.Models;
 using SwimmingAPI.Repo.Interfaces;
 
@@ -21,6 +22,9 @@ namespace SwimmingAPI.Repo
             return _db.Users.Find(userId);
         }
 
-        
+        public IdentityRole GetRole(int roleId)
+        {
+            return _db.Roles.Find(roleId);
+        }
     }
 }
