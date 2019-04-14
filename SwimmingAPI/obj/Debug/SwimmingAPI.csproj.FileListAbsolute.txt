@@ -263,3 +263,4 @@ C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\obj\Deb
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\obj\Debug\SwimmingAPI.Migrations.UpdateEvents4.resources
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\obj\Debug\SwimmingAPI.Migrations.UpdateEvents5.resources
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\bin\XmlDocument.xml
+C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPI\obj\Debug\SwimmingAPI.Migrations.updateMeets.resources

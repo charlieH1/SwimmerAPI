@@ -30,7 +30,7 @@ namespace SwimmingAPI.Controllers
     {
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
-        private IUserRepo _userRepo;
+        private readonly IUserRepo _userRepo;
 
         /// <inheritdoc />
         public AccountController()
@@ -42,7 +42,7 @@ namespace SwimmingAPI.Controllers
         public AccountController(ApplicationUserManager userManager,
             ISecureDataFormat<AuthenticationTicket> accessTokenFormat, IUserRepo userRepo)
         {
-            _userRepo = userRepo;
+            _userRepo =userRepo;
             UserManager = userManager;
             AccessTokenFormat = accessTokenFormat;
         }
@@ -63,6 +63,7 @@ namespace SwimmingAPI.Controllers
         }
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
+
 
         
         // GET api/Account/UserInfo
@@ -100,21 +101,20 @@ namespace SwimmingAPI.Controllers
         /// <returns>The profile of a swimmer</returns>
         [Authorize(Roles = "Official")]
         [Route("GetProfileOfSwimmer")]
-        public HttpResponseMessage GetProfileOfSwimmer(string userId)
+        public IHttpActionResult GetProfileOfSwimmer(string userId)
         {
             var user = _userRepo.GetUser(userId);
             
             if (user == null)
             {
 
-                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "User Not found");
+                return BadRequest("User Not found");
             }
             var roleId = user.Roles.First().RoleId;
 
             if (roleId == "Official")
             {
-                return Request.CreateErrorResponse(HttpStatusCode.Forbidden,
-                    "You can not access another officials account");
+                return Content(HttpStatusCode.Forbidden,"You can not access another officials account");
             }
 
             var userInfoView = new UserInfoViewModel()
@@ -128,8 +128,118 @@ namespace SwimmingAPI.Controllers
                 PhoneNumber = user.PhoneNumber,
                 Role = "Swimmer"
             };
-            return Request.CreateResponse(HttpStatusCode.OK, userInfoView);
+            return Ok(userInfoView);
         }
+
+
+        
+        /// <summary>
+        /// Get the profiles of swimmers by that name
+        /// </summary>
+        /// <param name="GivenName">The given name of the swimmer</param>
+        /// <param name="FamilyName">The family name of the swimmer</param>
+        /// <returns>A list of swimmers that match that criteria</returns>
+        [Authorize(Roles = "Official")]
+        [Route("GetProfileOfSwimmer")]
+        public IHttpActionResult GetProfilesOfSwimmerByName(string GivenName,string FamilyName)
+        {
+            var users = _userRepo.GetUserByName(GivenName,FamilyName);
+
+            if (users.Count==0)
+            {
+
+                return BadRequest("User Not found by that name");
+            }
+
+            foreach (var user in users)
+            {
+                if (user.Roles.First().RoleId == "Official")
+                {
+                    users.Remove(user);
+                }
+            }
+
+            if (users.Count == 0)
+            {
+                return BadRequest("No Swimmer found by that name");
+            }
+
+            var userInfoViewList = new List<UserInfoViewModel>();
+            foreach (var user in users)
+            {
+                var userInfoView = new UserInfoViewModel()
+                {
+                    Address = user.Address,
+                    Club = user.Club,
+                    Email = user.Email,
+                    FamilyName = user.FamilyName,
+                    Gender = user.Gender,
+                    GivenName = user.GivenName,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = "Swimmer"
+                };
+                userInfoViewList.Add(userInfoView);
+
+            }
+            
+            return Ok(userInfoViewList);
+        }
+
+
+
+        /// <summary>
+        /// Get the profiles of swimmers by that name
+        /// </summary>
+        /// <param name="GivenName">The given name of the swimmer</param>
+        /// <param name="FamilyName">The family name of the swimmer</param>
+        /// <returns>A list of swimmers that match that criteria</returns>
+        [Authorize(Roles = "Official")]
+        [Route("GetProfileOfSwimmer")]
+        public IHttpActionResult GetProfilesOfSwimmerByAge(int Age)
+        {
+            var users = _userRepo.GetUserByAge(Age);
+
+            if (users.Count == 0)
+            {
+
+                return BadRequest("User Not found by that name");
+            }
+
+            foreach (var user in users)
+            {
+                if (user.Roles.First().RoleId == "Official")
+                {
+                    users.Remove(user);
+                }
+            }
+
+            if (users.Count == 0)
+            {
+                return BadRequest("No Swimmer found by that name");
+            }
+
+            var userInfoViewList = new List<UserInfoViewModel>();
+            foreach (var user in users)
+            {
+                var userInfoView = new UserInfoViewModel()
+                {
+                    Address = user.Address,
+                    Club = user.Club,
+                    Email = user.Email,
+                    FamilyName = user.FamilyName,
+                    Gender = user.Gender,
+                    GivenName = user.GivenName,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = "Swimmer"
+                };
+                userInfoViewList.Add(userInfoView);
+
+            }
+
+            return Ok(userInfoViewList);
+        }
+
+
         /// <summary>
         /// Updates the info of a account
         /// </summary>
@@ -176,6 +286,15 @@ namespace SwimmingAPI.Controllers
             }
 
             var user = _userRepo.GetUser(model.userId);
+            if (user == null)
+            {
+                return BadRequest("No User found with that Id");
+            }
+            var roleId = user.Roles.First().RoleId;
+            if (roleId == "Official")
+            {
+                return BadRequest("Can not edit another officials account");
+            }
             user.Gender = model.Gender;
             user.Address = model.Address;
             user.Club = model.Club;

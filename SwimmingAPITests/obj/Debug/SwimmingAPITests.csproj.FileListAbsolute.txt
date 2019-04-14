@@ -120,7 +120,6 @@ C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPITests\bi
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPITests\bin\Debug\Microsoft.Owin.Security.dll
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPITests\bin\Debug\Microsoft.Owin.Security.OAuth.dll
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPITests\bin\Debug\Owin.dll
-C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPITests\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPITests\bin\Debug\EntityFramework.dll
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPITests\bin\Debug\System.Web.Http.Owin.dll
 C:\Users\Charlie\Documents\Final year\SwimmingAPI\SwimmerAPI\SwimmingAPITests\bin\Debug\Ninject.Web.Common.dll

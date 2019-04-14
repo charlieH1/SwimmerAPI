@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -57,6 +58,34 @@ namespace SwimmingAPI.Models
         public string EventAge { get; set; }
     }
 
+    public class EditEventModel
+    {
+        [Required]
+        [Display(Name ="Event Id")]
+        public int EventId { get; set; }
+
+        [Required]
+        [Display(Name = "Event Code")]
+        public string EventCode { get; set; }
+
+        [Required]
+        [Display(Name = "Round")]
+        public string Round { get; set; }
+
+        [Required]
+        [Display(Name = "Meet Id")]
+        public int MeetId { get; set; }
+
+        [Required]
+        [Display(Name = "Event Gender")]
+        public string EventGender { get; set; }
+
+        [Required]
+        [Display(Name = "Event Age")]
+        public string EventAge { get; set; }
+    }
+
+
     public class EventResult
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -99,6 +128,7 @@ namespace SwimmingAPI.Models
         public int Hundreths { get; set; }
     }
 
+    
 
     public class EventResultView
     {

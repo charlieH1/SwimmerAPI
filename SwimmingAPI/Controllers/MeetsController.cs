@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using SwimmingAPI.Models;
-using SwimmingAPI.Repo;
 using SwimmingAPI.Repo.Interfaces;
 
 namespace SwimmingAPI.Controllers
@@ -17,11 +13,13 @@ namespace SwimmingAPI.Controllers
     public class MeetsController : ApiController
     {
         private readonly IMeetRepo _meetRepo;
+        private readonly List<string> ValidPoolCodes;
 
         /// <inheritdoc />
         public MeetsController(IMeetRepo meetRepo)
         {
             _meetRepo = meetRepo;
+            ValidPoolCodes = new List<string>{"01","02","03","11","12","13","21","22","23","31","32","33","41","42","43","51","52","53","61","62","63","71","72","73","81","82","83","91","92","93"};
         }
         
         /// <summary>
@@ -39,9 +37,9 @@ namespace SwimmingAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (model.PoolLength < 0 || model.PoolLength > 99)
+            if (!ValidPoolCodes.Contains(model.PoolLength))
             {
-                return BadRequest("Pool length must be between 0 and 99");
+                return BadRequest("Pool Length must match the neutral file format code");
             }
 
             var res = _meetRepo.AddMeet(model);
@@ -64,9 +62,9 @@ namespace SwimmingAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (model.PoolLength < 0 || model.PoolLength > 99)
+            if (!ValidPoolCodes.Contains(model.PoolLength))
             {
-                return BadRequest("Pool length must be between 0 and 99");
+                return BadRequest("Pool Length must match the neutral file format code");
             }
 
             var res = _meetRepo.UpdateMeet(model);

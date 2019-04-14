@@ -20,6 +20,11 @@ namespace SwimmingAPI.Repo
             return _db.EventResults.ToList();
         }
 
+        public List<EventResult> GetEventResultsFromEventId(int eventId)
+        {
+            return _db.EventResults.Where(eR => eR.EventId == eventId).ToList();
+        }
+
         public bool AddEventResult(AddResultModel model)
         {
             var eventResult = _db.EventResults.Create();

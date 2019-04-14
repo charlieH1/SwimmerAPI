@@ -22,9 +22,16 @@ namespace SwimmingAPI.Repo
             return _db.Users.Find(userId);
         }
 
-        public IdentityRole GetRole(int roleId)
+        public List<ApplicationUser> GetUserByName(string GivenName, string FamilyName)
         {
-            return _db.Roles.Find(roleId);
+            return _db.Users.Where(U => U.FamilyName == FamilyName && U.GivenName == GivenName).ToList();
+        }
+
+        public List<ApplicationUser> GetUserByAge(int age)
+        {
+            var earliestDob = new DateTime().AddYears(-age-1);
+            var latestDob = new DateTime().AddYears(-age);
+            return _db.Users.Where(U => U.DateOfBirth > earliestDob && U.DateOfBirth < latestDob).ToList();
         }
     }
 }

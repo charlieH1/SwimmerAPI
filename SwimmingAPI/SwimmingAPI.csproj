@@ -282,6 +282,10 @@
     <Compile Include="Migrations\201904101857078_UpdateEvents5.Designer.cs">
       <DependentUpon>201904101857078_UpdateEvents5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904131757122_updateMeets.cs" />
+    <Compile Include="Migrations\201904131757122_updateMeets.Designer.cs">
+      <DependentUpon>201904131757122_updateMeets.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -438,6 +442,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904101857078_UpdateEvents5.resx">
       <DependentUpon>201904101857078_UpdateEvents5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904131757122_updateMeets.resx">
+      <DependentUpon>201904131757122_updateMeets.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

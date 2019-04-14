@@ -74,6 +74,39 @@ namespace SwimmingAPI.Controllers
         }
 
         /// <summary>
+        /// Edit Events
+        /// </summary>
+        /// <param name="model">The Event to edit</param>
+        /// <returns>Whether successful or not</returns>
+        [Route("EditEvent")]
+        [Authorize(Roles = "Official")]
+        //POST api/Events/EditEvent
+        public IHttpActionResult EditEvent(EditEventModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!Gender.Contains(model.EventGender))
+            {
+                return BadRequest("Gender entered is not valid it must be either M, F, or Mix");
+            }
+
+            if (!EventCodes.Contains(model.EventCode))
+            {
+                return BadRequest("Event Code is not valid and must be match the neutral file format standard");
+            }
+
+            if (!Rounds.Contains(model.Round))
+            {
+                return BadRequest("Round must be one of the following H, F, C, S, B according to the Neutral file format");
+            }
+
+            var res = _eventRepo.EditEvent(model);
+            return res ? (IHttpActionResult) Ok() : BadRequest("Editing event failed");
+        }
+
+        /// <summary>
         /// Gets Events
         /// </summary>
         /// <returns>The events as a list</returns>
@@ -100,7 +133,7 @@ namespace SwimmingAPI.Controllers
                 return BadRequest("Event Code is invalid");
             }
 
-            return Ok(_eventRepo.GetEvents().Where(e => e.EventCode == eventCode).ToList());
+            return Ok(_eventRepo.GetEventsByEventCode(eventCode));
         }
 
         /// <summary>
@@ -118,7 +151,7 @@ namespace SwimmingAPI.Controllers
                 return BadRequest("Gender entered is not valid it must be either M, F, or Mix");
             }
 
-            return Ok(_eventRepo.GetEvents().Where(e => e.EventGender == gender).ToList());
+            return Ok(_eventRepo.GetEventsByGender(gender));
         }
 
         /// <summary>
@@ -131,7 +164,7 @@ namespace SwimmingAPI.Controllers
         //GET api/Events/GetEventsByAge
         public IHttpActionResult GetEventsByAge(string age)
         {
-            return Ok(_eventRepo.GetEvents().Where(e => e.EventAge == age).ToList());
+            return Ok(_eventRepo.GetEventsByAge(age));
         }
 
         /// <summary>
@@ -150,9 +183,15 @@ namespace SwimmingAPI.Controllers
                 return BadRequest("Gender entered is not valid it must be either M, F, or Mix");
             }
 
-            return Ok(_eventRepo.GetEvents().Where(e => e.EventAge == age && e.EventGender == gender).ToList());
+            return Ok(_eventRepo.GetEventsByAgeAndGender(age,gender));
         }
 
+        /// <summary>
+        /// Gets Events By Age and Event Code
+        /// </summary>
+        /// <param name="age">The age</param>
+        /// <param name="eventCode">The event code</param>
+        /// <returns></returns>
         [Route("GetEventsByAgeAndEventCode")]
         [ResponseType(typeof(List<Event>))]
         //GET api/Events/GetEventsByAgeAndEventCode
@@ -163,7 +202,7 @@ namespace SwimmingAPI.Controllers
                 return BadRequest("Event Code is not valid and must be match the neutral file format standard");
             }
 
-            return Ok(_eventRepo.GetEvents().Where(e => e.EventAge == age && e.EventCode == eventCode).ToList());
+            return Ok(_eventRepo.GetEventsByAgeAndEventCode(age,eventCode));
 
         }
 
@@ -187,7 +226,7 @@ namespace SwimmingAPI.Controllers
                 return BadRequest("Gender entered is not valid it must be either M, F, or Mix");
             }
 
-            return Ok(_eventRepo.GetEvents().Where(e => e.EventCode == eventCode && e.EventGender == gender));
+            return Ok(_eventRepo.GetEventsByEventCodeAndGender(eventCode,gender));
         }
 
         /// <summary>
@@ -211,7 +250,7 @@ namespace SwimmingAPI.Controllers
                 return BadRequest("Gender entered is not valid it must be either M, F, or Mix");
             }
 
-            return Ok(_eventRepo.GetEvents().Where(e => e.EventCode == eventCode && e.EventGender == gender && e.EventAge ==age));
+            return Ok(_eventRepo.GetEventsByAgeGenderAndEventCode(age,gender,eventCode));
         }
 
         /// <summary>
@@ -227,7 +266,7 @@ namespace SwimmingAPI.Controllers
             var _event = _eventRepo.GetEvent(eventId);
             if (_event == null)
             {
-                BadRequest("Invalid event Id, event not found");
+                return BadRequest("Invalid event Id, event not found");
             }
             var eventResultsToView = EventResultsToView(_event);
 
@@ -246,7 +285,7 @@ namespace SwimmingAPI.Controllers
         //GET api/Events/GetResultsForMeet
         public IHttpActionResult GetResultsForMeet(int meetId)
         {
-            var events = _eventRepo.GetEvents().Where(e => e.MeetId == meetId).ToList();
+            var events = _eventRepo.GetEventsByMeetId(meetId);
             if (events.Count == 0)
             {
                 return BadRequest("No events for that meet");
@@ -274,7 +313,7 @@ namespace SwimmingAPI.Controllers
             var _event = _eventRepo.GetEvent(eventId);
             if (_event == null)
             {
-                BadRequest("Invalid event Id, event not found");
+                return BadRequest("Invalid event Id, event not found");
             }
             var eventResultsToView = EventResultsToView(_event);
             return Ok(FormatEventResults(eventResultsToView));
@@ -284,13 +323,13 @@ namespace SwimmingAPI.Controllers
         /// Gets the results for a meet in the neutral file format
         /// </summary>
         /// <param name="meetId">The meet id</param>
-        /// <returns>The results as a list of strings in the fomrat of the neutral file format</returns>
+        /// <returns>The results as a list of strings in the format of the neutral file format</returns>
         [Route("GetEventResultsForMeetFormatted")]
         [ResponseType(typeof(List<string>))]
         //GET api/Events/GetResultsForMeetFormatted
         public IHttpActionResult GetResultsForMeetFormatted(int meetId)
         {
-            var events = _eventRepo.GetEvents().Where(e => e.MeetId == meetId).ToList();
+            var events = _eventRepo.GetEventsByMeetId(meetId);
             if (events.Count == 0)
             {
                 return BadRequest("No events for that meet");
@@ -321,12 +360,7 @@ namespace SwimmingAPI.Controllers
             }
 
             var res = _eventResultsRepo.AddEventResult(model);
-            if (res)
-            {
-                return Ok();
-            }
-
-            return InternalServerError(new Exception("Unable to add to database"));
+            return res ? (IHttpActionResult) Ok() : BadRequest("Unable To add to database");
         }
 
 
@@ -337,7 +371,7 @@ namespace SwimmingAPI.Controllers
 
         private List<EventResultView> EventResultsToView(Event _event)
         {
-            var eventResults = _eventResultsRepo.GetEventResults().Where(ER => ER.EventId == _event.EventId).ToList();
+            var eventResults = _eventResultsRepo.GetEventResultsFromEventId(_event.EventId);
             var eventResultsToView = new List<EventResultView>();
 
             foreach (var eventResult in eventResults)
