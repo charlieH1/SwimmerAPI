@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -15,28 +16,40 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using SwimmingAPI.Models;
 using SwimmingAPI.Providers;
+using SwimmingAPI.Repo.Interfaces;
 using SwimmingAPI.Results;
 
 namespace SwimmingAPI.Controllers
 {
+    /// <summary>
+    /// The controller for accounts
+    /// </summary>
     [Authorize]
     [RoutePrefix("api/Account")]
     public class AccountController : ApiController
     {
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
+        private readonly IUserRepo _userRepo;
 
+        /// <inheritdoc />
         public AccountController()
         {
+            
         }
 
+        /// <inheritdoc />
         public AccountController(ApplicationUserManager userManager,
-            ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
+            ISecureDataFormat<AuthenticationTicket> accessTokenFormat, IUserRepo userRepo)
         {
+            _userRepo =userRepo;
             UserManager = userManager;
             AccessTokenFormat = accessTokenFormat;
         }
 
+        /// <summary>
+        /// The user manager
+        /// </summary>
         public ApplicationUserManager UserManager
         {
             get
@@ -51,22 +64,257 @@ namespace SwimmingAPI.Controllers
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
+
+        
         // GET api/Account/UserInfo
+        /// <summary>
+        /// Gets the user info.
+        /// </summary>
+        /// <returns>The user info</returns>
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("UserInfo")]
         public UserInfoViewModel GetUserInfo()
         {
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
 
+            var user = _userRepo.GetUser(User.Identity.GetUserId());
+            var userRole = User.IsInRole("Official") ? "Official" : "Swimmer";
+
             return new UserInfoViewModel
             {
                 Email = User.Identity.GetUserName(),
-                HasRegistered = externalLogin == null,
-                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
+                Address = user.Address,
+                Club = user.Club,
+                FamilyName = user.FamilyName,
+                Gender = user.Gender,
+                GivenName = user.GivenName,
+                PhoneNumber = user.PhoneNumber,
+                Role = userRole,
             };
         }
 
+
+        /// <summary>
+        /// Gets the profile of the swimmer if the account is a official
+        /// </summary>
+        /// <param name="userId">The user id of the swimmer</param>
+        /// <returns>The profile of a swimmer</returns>
+        [Authorize(Roles = "Official")]
+        [Route("GetProfileOfSwimmer")]
+        public IHttpActionResult GetProfileOfSwimmer(string userId)
+        {
+            var user = _userRepo.GetUser(userId);
+            
+            if (user == null)
+            {
+
+                return BadRequest("User Not found");
+            }
+            var roleId = user.Roles.First().RoleId;
+
+            if (roleId == "Official")
+            {
+                return Content(HttpStatusCode.Forbidden,"You can not access another officials account");
+            }
+
+            var userInfoView = new UserInfoViewModel()
+            {
+                Address = user.Address,
+                Club = user.Club,
+                Email = user.Email,
+                FamilyName = user.FamilyName,
+                Gender = user.Gender,
+                GivenName = user.GivenName,
+                PhoneNumber = user.PhoneNumber,
+                Role = "Swimmer"
+            };
+            return Ok(userInfoView);
+        }
+
+
+        
+        /// <summary>
+        /// Get the profiles of swimmers by that name
+        /// </summary>
+        /// <param name="GivenName">The given name of the swimmer</param>
+        /// <param name="FamilyName">The family name of the swimmer</param>
+        /// <returns>A list of swimmers that match that criteria</returns>
+        [Authorize(Roles = "Official")]
+        [Route("GetProfileOfSwimmer")]
+        public IHttpActionResult GetProfilesOfSwimmerByName(string GivenName,string FamilyName)
+        {
+            var users = _userRepo.GetUserByName(GivenName,FamilyName);
+
+            if (users.Count==0)
+            {
+
+                return BadRequest("User Not found by that name");
+            }
+
+            foreach (var user in users)
+            {
+                if (user.Roles.First().RoleId == "Official")
+                {
+                    users.Remove(user);
+                }
+            }
+
+            if (users.Count == 0)
+            {
+                return BadRequest("No Swimmer found by that name");
+            }
+
+            var userInfoViewList = new List<UserInfoViewModel>();
+            foreach (var user in users)
+            {
+                var userInfoView = new UserInfoViewModel()
+                {
+                    Address = user.Address,
+                    Club = user.Club,
+                    Email = user.Email,
+                    FamilyName = user.FamilyName,
+                    Gender = user.Gender,
+                    GivenName = user.GivenName,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = "Swimmer"
+                };
+                userInfoViewList.Add(userInfoView);
+
+            }
+            
+            return Ok(userInfoViewList);
+        }
+
+
+
+        /// <summary>
+        /// Get the profiles of swimmers by that name
+        /// </summary>
+        /// <param name="GivenName">The given name of the swimmer</param>
+        /// <param name="FamilyName">The family name of the swimmer</param>
+        /// <returns>A list of swimmers that match that criteria</returns>
+        [Authorize(Roles = "Official")]
+        [Route("GetProfileOfSwimmer")]
+        public IHttpActionResult GetProfilesOfSwimmerByAge(int Age)
+        {
+            var users = _userRepo.GetUserByAge(Age);
+
+            if (users.Count == 0)
+            {
+
+                return BadRequest("User Not found by that name");
+            }
+
+            foreach (var user in users)
+            {
+                if (user.Roles.First().RoleId == "Official")
+                {
+                    users.Remove(user);
+                }
+            }
+
+            if (users.Count == 0)
+            {
+                return BadRequest("No Swimmer found by that name");
+            }
+
+            var userInfoViewList = new List<UserInfoViewModel>();
+            foreach (var user in users)
+            {
+                var userInfoView = new UserInfoViewModel()
+                {
+                    Address = user.Address,
+                    Club = user.Club,
+                    Email = user.Email,
+                    FamilyName = user.FamilyName,
+                    Gender = user.Gender,
+                    GivenName = user.GivenName,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = "Swimmer"
+                };
+                userInfoViewList.Add(userInfoView);
+
+            }
+
+            return Ok(userInfoViewList);
+        }
+
+
+        /// <summary>
+        /// Updates the info of a account
+        /// </summary>
+        /// <param name="model">The model of the update info</param>
+        /// <returns>The action result</returns>
+        //POST api/Account/UpdateInfo
+        [Route("UpdateInfo")]
+        public async Task<IHttpActionResult> UpdateInfo(RegisterBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _userRepo.GetUser(User.Identity.GetUserId());
+            user.Gender = model.Gender;
+            user.Address = model.Address;
+            user.Club = model.Club;
+            user.FamilyName = model.FamilyName;
+            user.GivenName = model.GivenName;
+            user.DateOfBirth = model.DateOfBirth;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+
+            IdentityResult result = await _userManager.UpdateAsync(user);
+
+            return !result.Succeeded ? GetErrorResult(result) : Ok();
+        }
+
+        //POST api/Account/UpdateInfoOfSwimmer
+        /// <summary>
+        /// Updates swimmer info
+        /// </summary>
+        /// <param name="model"> the model required to update the info of the swimmer</param>
+        /// <returns>Whether successful or not</returns>
+        [Authorize(Roles = "Official")]
+        [Route("UpdateInfoOfSwimmer")]
+        public async Task<IHttpActionResult> UpdateInfoOfSwimmer(UpdateSwimmerInfoModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _userRepo.GetUser(model.userId);
+            if (user == null)
+            {
+                return BadRequest("No User found with that Id");
+            }
+            var roleId = user.Roles.First().RoleId;
+            if (roleId == "Official")
+            {
+                return BadRequest("Can not edit another officials account");
+            }
+            user.Gender = model.Gender;
+            user.Address = model.Address;
+            user.Club = model.Club;
+            user.FamilyName = model.FamilyName;
+            user.GivenName = model.GivenName;
+            user.DateOfBirth = model.DateOfBirth;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+
+            IdentityResult result = await _userManager.UpdateAsync(user);
+
+            return !result.Succeeded ? GetErrorResult(result) : Ok();
+        }
+
         // POST api/Account/Logout
+        /// <summary>
+        /// Logs out user
+        /// </summary>
+        /// <returns>Whether successful or not</returns>
         [Route("Logout")]
         public IHttpActionResult Logout()
         {
@@ -75,6 +323,12 @@ namespace SwimmingAPI.Controllers
         }
 
         // GET api/Account/ManageInfo?returnUrl=%2F&generateState=true
+        /// <summary>
+        /// Gets the manage info view
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <param name="generateState"></param>
+        /// <returns></returns>
         [Route("ManageInfo")]
         public async Task<ManageInfoViewModel> GetManageInfo(string returnUrl, bool generateState = false)
         {
@@ -115,6 +369,11 @@ namespace SwimmingAPI.Controllers
         }
 
         // POST api/Account/ChangePassword
+        /// <summary>
+        /// Changes password of the account logged in
+        /// </summary>
+        /// <param name="model">Change password model</param>
+        /// <returns></returns>
         [Route("ChangePassword")]
         public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
         {
@@ -135,6 +394,11 @@ namespace SwimmingAPI.Controllers
         }
 
         // POST api/Account/SetPassword
+        /// <summary>
+        /// Sets the password of a account
+        /// </summary>
+        /// <param name="model">Set password model</param>
+        /// <returns></returns>
         [Route("SetPassword")]
         public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
         {
@@ -154,6 +418,11 @@ namespace SwimmingAPI.Controllers
         }
 
         // POST api/Account/AddExternalLogin
+        /// <summary>
+        /// For adding a external login - currently not implemented 
+        /// </summary>
+        /// <param name="model">External login model</param>
+        /// <returns></returns>
         [Route("AddExternalLogin")]
         public async Task<IHttpActionResult> AddExternalLogin(AddExternalLoginBindingModel model)
         {
@@ -192,6 +461,11 @@ namespace SwimmingAPI.Controllers
         }
 
         // POST api/Account/RemoveLogin
+        /// <summary>
+        /// For removing a login
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [Route("RemoveLogin")]
         public async Task<IHttpActionResult> RemoveLogin(RemoveLoginBindingModel model)
         {
@@ -221,6 +495,12 @@ namespace SwimmingAPI.Controllers
         }
 
         // GET api/Account/ExternalLogin
+        /// <summary>
+        /// For getting a external login - currently not implemented
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="error"></param>
+        /// <returns></returns>
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
         [AllowAnonymous]
@@ -278,6 +558,12 @@ namespace SwimmingAPI.Controllers
         }
 
         // GET api/Account/ExternalLogins?returnUrl=%2F&generateState=true
+        /// <summary>
+        /// Gets external logins available - currently not working as not implemented
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <param name="generateState"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [Route("ExternalLogins")]
         public IEnumerable<ExternalLoginViewModel> GetExternalLogins(string returnUrl, bool generateState = false)
@@ -319,6 +605,11 @@ namespace SwimmingAPI.Controllers
         }
 
         // POST api/Account/Register
+        /// <summary>
+        /// For registering a account
+        /// </summary>
+        /// <param name="model">The registration binding model</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [Route("Register")]
         public async Task<IHttpActionResult> Register(RegisterBindingModel model)
@@ -328,12 +619,12 @@ namespace SwimmingAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (model.Gender != "M" || model.Gender != "F" )
+            if (model.Gender != "M" && model.Gender != "F" )
             {
                 return BadRequest("Gender Must either be M or F");
             }
 
-            if (model.AccountType != "Swimmmer" || model.AccountType != "Official")
+            if (model.AccountType != "Swimmer" && model.AccountType != "Official")
             {
                 return BadRequest("Roles available are Official or Swimmer");
             }
@@ -366,6 +657,11 @@ namespace SwimmingAPI.Controllers
         }
 
         // POST api/Account/RegisterExternal
+        /// <summary>
+        /// For registering a externla login- currently not working / implemented
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("RegisterExternal")]
@@ -398,6 +694,7 @@ namespace SwimmingAPI.Controllers
             return Ok();
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing && _userManager != null)
